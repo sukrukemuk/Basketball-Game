@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Babylon.js Projesi</title>
+</head>
+<body>
+    <canvas id="renderCanvas" style="width: 100%; height: 100%;"></canvas>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+    <script src="https://cdn.babylonjs.com/recast.js"></script>
+    <script src="https://cdn.babylonjs.com/ammo.js"></script>
+    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
+    <script src="https://cdn.babylonjs.com/cannon.js"></script>
+    <script src="https://cdn.babylonjs.com/Oimo.js"></script>
+    <script src="https://cdn.babylonjs.com/earcut.min.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+
+
+    <script> 
+                var canvas = document.getElementById("renderCanvas");
+
+                var startRenderLoop = function (engine, canvas) {
+                    engine.runRenderLoop(function () {
+                        if (sceneToRender && sceneToRender.activeCamera) {
+                            sceneToRender.render();
+                        }
+                    });
+                }
+
+                var engine = null;
+                var scene = null;
+                var sceneToRender = null;
+                var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+                var createScene = async function () {
+                var scene = new BABYLON.Scene(engine);
+               
+
+
+
+
+                var fontData = await (await fetch("https://assets.babylonjs.com/fonts/Droid Sans_Regular.json")).json();
+                var myText = BABYLON.MeshBuilder.CreateText("myText", "BASKETBALL GAME", fontData, {
+                size: 7,
+                resolution: 30, 
+                depth: 5,
+               
+                
+                });
+
+                scene.createDefaultCameraOrLight(true);
+
+                scene.activeCamera.attachControl(canvas, true);
+
+  
+                myText.position.y= 30 
+     
+
+       
+
+         
+            //Basket Topu.
+            var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+
+            sphere.position.x= 0.7;
+            sphere.position.z= -3;
+           
+            var ground = BABYLON.MeshBuilder.CreateGround("ground1", {width: 80, height: 60, subdivisions: 1}, scene); 
+            ground.position.y=-10
+            var material = new BABYLON.StandardMaterial("groundMaterial", scene);
+            var material = new BABYLON.StandardMaterial("groundMaterial", scene);
+            ground.position.z= -2;
+
+            //Zemin.
+            var texture = new BABYLON.Texture("basket.jpg", scene);
+            material.diffuseTexture = texture;
+
+            ground.material = material;
+
+           
+
+            var material = new BABYLON.StandardMaterial("material", scene);
+            var texture = new BABYLON.Texture("baseball.jpg", scene);
+            material.diffuseTexture = texture;
+            sphere.material = material;
+            
+
+            
+
+            var mat = new BABYLON.StandardMaterial("bricks");
+            mat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/bricktile.jpg");
+            
+            const pat = BABYLON.Mesh.FLIP_TILE;
+            const av = BABYLON.Mesh.TOP;
+            const ah = BABYLON.Mesh.LEFT;
+            
+            
+            const options = {
+                sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+                pattern: pat,
+                alignVertical: av,
+                alignHorizontal: ah,
+                width: 80,
+                height: 15,
+                depth: 4,
+                tileSize: 1,
+                tileWidth:3,
+                
+            }
+
+            //Stad Duvarları.
+            
+            const tiledBox = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:90 ,height:15, depth: 4 }, scene);
+            tiledBox.material = mat;
+            tiledBox.position.y=-2.5
+            tiledBox.position.x=0
+            tiledBox.position.z=30
+            
+            const tiledBox2 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox",{ size: 0, width:90 ,height:15, depth: 4 }, scene);
+            tiledBox2.material = mat;
+            tiledBox2.position.y=-2.5
+            tiledBox2.position.x=0
+            tiledBox2.position.z=-36
+            const tiledBox3 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:70 ,height:15, depth: 4 }, scene);
+           
+            tiledBox3.material = mat;
+            tiledBox3.position.y=-2.5
+            tiledBox3.position.x=44
+            tiledBox3.position.z=-3
+            tiledBox3.rotation.y += 1.57;
+
+            const tiledBox4 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:70 ,height:15, depth: 4 }, scene);
+           
+           tiledBox4.material = mat;
+           tiledBox4.position.y=-2.5
+           tiledBox4.position.x=-44
+           tiledBox4.position.z=-3
+           tiledBox4.rotation.y += 1.57;
+
+           const tiledBox5 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:95 ,height:3, depth: 8 }, scene);
+           
+           tiledBox5.material = mat;
+           tiledBox5.position.y=6
+           tiledBox5.position.x=0
+           tiledBox5.position.z=25
+           
+           const tiledBox6 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:95 ,height:3, depth: 8 }, scene);
+           
+           tiledBox6.material = mat;
+           tiledBox6.position.y=6
+           tiledBox6.position.x=0
+           tiledBox6.position.z=-31
+
+           const tiledBox7 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:75 ,height:3, depth: 8 }, scene);
+           
+           tiledBox7.material = mat;
+           tiledBox7.position.y=6
+           tiledBox7.position.x=-39
+           tiledBox7.position.z=-3
+           tiledBox7.rotation.y += 1.57;
+
+           const tiledBox8 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:75 ,height:3, depth: 8 }, scene);
+           
+           tiledBox8.material = mat;
+           tiledBox8.position.y=6
+           tiledBox8.position.x=39
+           tiledBox8.position.z=-3
+           tiledBox8.rotation.y += 1.57;
+
+
+
+           //Oturma yerleri.
+           const tiledBox9 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:65 ,height:3, depth: 6 }, scene);
+           
+           tiledBox9.material = mat;
+           tiledBox9.position.y=-8.5
+           tiledBox9.position.x=38
+           tiledBox9.position.z=-3
+           tiledBox9.rotation.y += 1.57;
+
+           const tiledBox10 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:65 ,height:3, depth: 7 }, scene);
+           
+           tiledBox10.material = mat;
+           tiledBox10.position.y=-6.5
+           tiledBox10.position.x=40
+           tiledBox10.position.z=-3
+           tiledBox10.rotation.y += 1.57;
+
+           
+           const tiledBox11 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:65 ,height:3, depth: 6 }, scene);
+           
+           tiledBox11.material = mat;
+           tiledBox11.position.y=-8.5
+           tiledBox11.position.x=-38
+           tiledBox11.position.z=-3
+           tiledBox11.rotation.y += 1.57;
+
+           const tiledBox12 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:65 ,height:3, depth: 7 }, scene);
+           
+           tiledBox12.material = mat;
+           tiledBox12.position.y=-6.5
+           tiledBox12.position.x=-40
+           tiledBox12.position.z=-3
+           tiledBox12.rotation.y += 1.57;
+        
+           const tiledBox13 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:90 ,height:3, depth: 8 }, scene);
+           
+           tiledBox13.material = mat;
+           tiledBox13.position.y=-8.5
+           tiledBox13.position.x=0
+           tiledBox13.position.z=25
+
+
+           const tiledBox14 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:90 ,height:3, depth: 8 }, scene);
+           
+           tiledBox14.material = mat;
+           tiledBox14.position.y=-6.5
+           tiledBox14.position.x=0
+           tiledBox14.position.z=27
+
+           const tiledBox15 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:90 ,height:3, depth: 8 }, scene);
+           
+           tiledBox15.material = mat;
+           tiledBox15.position.y=-8.5
+           tiledBox15.position.x=0
+           tiledBox15.position.z=-31
+
+
+           const tiledBox16 = BABYLON.MeshBuilder.CreateTiledBox("tiledBox", { size: 0, width:90 ,height:3, depth: 8 }, scene);
+           
+           tiledBox16.material = mat;
+           tiledBox16.position.y=-6.5
+           tiledBox16.position.x=0
+           tiledBox16.position.z=-33
+
+
+           //Potalar.
+
+           const torus = BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.25, diameter: 4,});
+           torus.position.x = 30.8
+           torus.position.z = -3.7
+            
+           const torus2 = BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.25, diameter: 4});
+           torus2.position.x = -29.2
+           torus2.position.z = -3.6
+            
+           const cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", options, scene);
+           cylinder.position.x = 32.8
+           cylinder.position.z = -3.7
+           cylinder.position.y = -5
+           cylinder.scaling.y = 0.8
+
+
+           const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("cylinder", options, scene);
+           cylinder2.position.x = -31.2
+           cylinder2.position.z = -3.6
+           cylinder2.position.y = -5
+           cylinder2.scaling.y = 0.8
+        const music = new BABYLON.Sound("Music", "mp3.mp3", scene, null, {
+        loop: true,
+        autoplay: true,
+        });
+                //Fizik Motoru Entegre.
+        
+            var hk = new BABYLON.HavokPlugin();
+
+            scene.enablePhysics(new BABYLON.Vector3(0, -9.8, 0), hk);
+
+            var sphereAggregate = new BABYLON.PhysicsAggregate(sphere, BABYLON.PhysicsShapeType.SPHERE, { mass: 1, restitution:0.75}, scene);
+
+          
+            var groundAggregate = new BABYLON.PhysicsAggregate(ground, BABYLON.PhysicsShapeType.BOX, { mass: 0 }, scene);
+
+ 
+
+
+            //Arayüz.
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+            var instructions = new BABYLON.GUI.TextBlock();
+            instructions.text = "Hareket etmek için w-a-s-d tuşlarını kullan b ile dans ettir. Fare ile kamerayı ayarlayabilirsin.";
+            instructions.color = "white";
+            instructions.fontSize = 16;
+            instructions.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
+            instructions.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
+            advancedTexture.addControl(instructions);
+
+
+
+            // Klavye Olayları.
+            var inputMap = {};
+            scene.actionManager = new BABYLON.ActionManager(scene);
+            scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+                inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+            }));
+            scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
+                inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+            }));
+
+
+    // Karakter.
+    
+
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero = newMeshes[0];
+
+               
+        hero.scaling.scaleInPlace(0.3);
+
+ 
+        var heroSpeed = 0.15;
+        var heroSpeedBackwards = 0.15;
+        var heroRotationSpeed = 0.05;
+        hero.position.y=-10
+        hero.position.x=-27
+        hero.position.z=-3
+
+        var animating = true;
+
+        const walkAnim = scene.getAnimationGroupByName("Walking");
+        const walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
+        const idleAnim = scene.getAnimationGroupByName("Idle");
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        
+
+        
+        //Hareket fonksiyonları.
+        scene.onBeforeRenderObservable.add(() => {
+            var keydown = false;
+            //Yönler.
+            if (inputMap["w"]) {
+                hero.moveWithCollisions(hero.forward.scaleInPlace(heroSpeed));
+                keydown = true;
+            }
+            if (inputMap["s"]) {
+                hero.moveWithCollisions(hero.forward.scaleInPlace(-heroSpeedBackwards));
+                keydown = true;
+            }
+            if (inputMap["a"]) {    
+                hero.rotate(BABYLON.Vector3.Up(), -heroRotationSpeed);
+                keydown = true;
+            }
+            if (inputMap["d"]) {
+                hero.rotate(BABYLON.Vector3.Up(), heroRotationSpeed);
+                keydown = true;
+            }
+            if (inputMap["b"]) {
+                keydown = true;
+            }
+
+            //Hareket Fonksiyonları.  
+            if (keydown) {
+                if (!animating) {
+                    animating = true;
+                    if (inputMap["s"]) {
+                        
+                        walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
+                    }
+                    else if
+                        (inputMap["b"]) {
+                       
+                        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+                    }
+                    else {
+                        
+                        walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
+                    }
+                }
+            }
+            else {
+
+                if (animating) {
+                      
+                    idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
+
+                  
+                    sambaAnim.stop();
+                    walkAnim.stop();
+                    walkBackAnim.stop();
+
+                    
+                    animating = false;
+                }
+            }
+        });
+
+    });
+
+
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero3 = newMeshes[0];
+
+        //Scale the model down        
+        hero3.scaling.scaleInPlace(0.3);
+
+        hero3.position.y=-7
+        hero3.position.x=-27
+        hero3.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero4 = newMeshes[0];
+
+        //Scale the model down        
+        hero4.scaling.scaleInPlace(0.3);
+
+        hero4.position.y=-7
+        hero4.position.x=-3
+        hero4.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero5 = newMeshes[0];
+
+        //Scale the model down        
+        hero5.scaling.scaleInPlace(0.3);
+
+        hero5.position.y=-7
+        hero5.position.x=-15
+        hero5.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero6 = newMeshes[0];
+
+        //Scale the model down        
+        hero6.scaling.scaleInPlace(0.3);
+
+        hero6.position.y=-7
+        hero6.position.x=27
+        hero6.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero7 = newMeshes[0];
+
+        //Scale the model down        
+        hero7.scaling.scaleInPlace(0.3);
+
+        hero7.position.y=-7
+        hero7.position.x=3
+        hero7.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero8 = newMeshes[0];
+
+        //Scale the model down        
+        hero8.scaling.scaleInPlace(0.3);
+
+        hero8.position.y=-7
+        hero8.position.x=15
+        hero8.position.z=-24
+        //Get the Samba animation Group
+        const sambaAnim = scene.getAnimationGroupByName("Samba");
+
+        //Play the Samba animation  
+        sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
+    });
+
+
+
+
+    
+    // Karakter.
+    BABYLON.SceneLoader.ImportMesh("", "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+        var hero2 = newMeshes[0];
+
+               
+        hero2.scaling.scaleInPlace(0.3);
+
+ 
+        hero2.position.y=-10
+        hero2.position.x=27
+        hero2.position.z=-3
+
+      
+    });
+
+
+
+    
+
+
+            
+                return scene;
+};
+              
+
+
+        window.initFunction = async function() {
+                    
+                    
+                    globalThis.HK = await HavokPhysics();
+                    var asyncEngineCreation = async function() {
+                        try {
+                        return createDefaultEngine();
+                        } catch(e) {
+                        console.log("the available createEngine function failed. Creating the default engine instead");
+                        return createDefaultEngine();
+                        }
+                    }
+
+                    window.engine = await asyncEngineCreation();
+        if (!engine) throw 'engine should not be null.';
+        startRenderLoop(engine, canvas);
+        window.scene = createScene();};
+        initFunction().then(() => {scene.then(returnedScene => { sceneToRender = returnedScene; });
+                            
+        });
+
+
+
+    
+        // Tarayıcı boyutu değiştiğinde görüntüyü yeniden boyutlandırma.
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });   
+       
+           
+    </script>
+</body>
+</html>
